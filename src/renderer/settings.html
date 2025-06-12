@@ -1,0 +1,2386 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সেটিংস - স্কুল বাস ম্যানেজমেন্ট</title>
+    <style>
+        @font-face {
+            font-family: 'Noto Serif Bengali';
+            src: local('Noto Serif Bengali'),
+                local('NotoSerifBengali'),
+                url('fonts/NotoSerifBengali-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Noto Serif Bengali';
+            src: local('Noto Serif Bengali Bold'),
+                local('NotoSerifBengali-Bold'),
+                url('fonts/NotoSerifBengali-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --danger: #e74c3c;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --sidebar-width: 250px;
+            --boys-color: #3498db;
+            --girls-color: #e84393;
+            --day-shift-color: #e67e22;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Serif Bengali', serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Animation Styles */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: 100vh;
+            padding: 20px 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            text-align: center;
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        .app-logo {
+            max-width: 50%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            padding: 12px 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .nav-item.active {
+            background-color: #f0f7ff;
+            border-left-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .content-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        /* Settings Card Styles */
+        .settings-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+        }
+
+        .card-title i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        /* Shift Tabs */
+        .shift-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .shift-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .shift-tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-day-shift {
+            background-color: var(--day-shift-color);
+            color: white;
+        }
+
+        .btn-day-shift:hover {
+            background-color: #d35400;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Stand Input Table */
+        .stand-input-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .stand-input-table th, .stand-input-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .stand-input-table th {
+            background-color: #f5f7fa;
+        }
+
+        .stand-input-table input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .add-stand-btn {
+            margin-bottom: 15px;
+        }
+
+        /* Data Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th {
+            background-color: #f5f7fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid #eee;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .editable {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .editable:hover {
+            background-color: #f0f7ff;
+        }
+
+        .editable-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 0 10px;
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            font-size: inherit;
+            font-family: inherit;
+            z-index: 10;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .edit-btn {
+            color: var(--primary);
+            margin-right: 10px;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Status Messages */
+        .status-message {
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+            display: block;
+            border-left: 4px solid #28a745;
+        }
+
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            display: block;
+            border-left: 4px solid #dc3545;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Student Image Preview */
+        .student-image-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 5px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            display: none;
+            margin-top: 10px;
+        }
+
+        /* Audio Player Styles */
+        .audio-player {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .audio-preview {
+            background-color: #f5f7fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .audio-preview h4 {
+            margin-bottom: 10px;
+        }
+
+        .audio-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .audio-item:last-child {
+            border-bottom: none;
+        }
+
+        .audio-info {
+            flex: 1;
+        }
+
+        .audio-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Drop Zone Styles */
+        .drop-zone {
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .drop-zone:hover {
+            border-color: var(--primary);
+            background-color: #f8f9fa;
+        }
+
+        .drop-zone.active {
+            border-color: var(--primary);
+            background-color: #f0f7ff;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 20px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Search and Filter Styles */
+        .search-filter-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+
+        .shift-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .search-filter-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 15px;
+            }
+
+            .settings-card {
+                padding: 15px;
+            }
+
+            .content-title {
+                font-size: 1.5rem;
+            }
+
+            .card-title {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .modal-content {
+                width: 95%;
+                padding: 15px;
+            }
+        }
+
+        /* Custom Confirmation Dialog */
+        .confirmation-dialog {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dialog-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .dialog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .dialog-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .dialog-body {
+            margin-bottom: 20px;
+        }
+
+        .dialog-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Export Section */
+        .export-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .export-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        /* Audio Phrase Management */
+        .phrase-type-boys {
+            color: var(--boys-color);
+            font-weight: bold;
+        }
+
+        .phrase-type-girls {
+            color: var(--girls-color);
+            font-weight: bold;
+        }
+
+        .phrase-type-bus {
+            color: var(--day-shift-color);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <button onclick="window.electronAPI.closeSettingsWindow()" style="
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 200;
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.3s;
+    " title="পেছনে যান" class="btn-animation">&#8592;</button>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <img src="./assets/bcpsc.png" alt="School Logo" class="app-logo">
+            <div class="sidebar-title">সেটিংস মেনু</div>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item active" data-target="route-management">
+                <i>🏞</i> রাস্তা ব্যবস্থাপনা
+            </li>
+            <li class="nav-item" data-target="bus-management">
+                <i>🚌</i> বাস ব্যবস্থাপনা
+            </li>
+            <li class="nav-item" data-target="student-management">
+                <i>👨‍🎓</i> শিক্ষার্থী ব্যবস্থাপনা
+            </li>
+            <li class="nav-item" data-target="audio-management">
+                <i>🕬</i> অডিও ব্যবস্থাপনা
+            </li>
+            <li class="nav-item" data-target="data-management">
+                <i>💾</i> ডাটা ব্যবস্থাপনা
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="content-header">
+            <h1 class="content-title">সিস্টেম সেটিংস</h1>
+        </div>
+
+        <!-- Status Message -->
+        <div id="status-message" class="status-message"></div>
+
+        <!-- Route Management Section -->
+        <div class="settings-card active" id="route-management">
+            <h2 class="card-title"><i>🏞</i> রাস্তা ব্যবস্থাপনা</h2>
+
+            <!-- Shift Tabs -->
+            <div class="shift-tabs">
+                <div class="shift-tab active" data-shift="morning">প্রভাতি শাখা</div>
+                <div class="shift-tab" data-shift="day">দিবা শাখা</div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="route-name">রাস্তার নাম</label>
+                    <input type="text" id="route-name" class="form-control" placeholder="যেমন: রাস্তা ১">
+                </div>
+            </div>
+
+            <div id="morning-shift-fields">
+                <h3 style="margin-bottom: 15px;">স্ট্যান্ড ও শিক্ষার্থী সংখ্যা</h3>
+                <table class="stand-input-table" id="morning-stand-table">
+                    <thead>
+                        <tr>
+                            <th>স্ট্যান্ড নাম</th>
+                            <th>শিক্ষার্থী সংখ্যা</th>
+                            <th>অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" class="form-control stand-name" placeholder="স্ট্যান্ড নাম"></td>
+                            <td><input type="number" class="form-control student-count" placeholder="সংখ্যা" min="0"></td>
+                            <td><button class="btn btn-danger remove-stand-btn">মুছুন</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-secondary add-stand-btn" id="add-morning-stand-btn">স্ট্যান্ড যোগ করুন</button>
+            </div>
+
+            <div id="day-shift-fields" style="display: none;">
+                <h3 style="margin-bottom: 15px;">স্ট্যান্ড ও শিক্ষার্থী সংখ্যা</h3>
+                <table class="stand-input-table" id="day-stand-table">
+                    <thead>
+                        <tr>
+                            <th>স্ট্যান্ড নাম</th>
+                            <th>ছাত্র সংখ্যা</th>
+                            <th>ছাত্রী সংখ্যা</th>
+                            <th>অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" class="form-control stand-name" placeholder="স্ট্যান্ড নাম"></td>
+                            <td><input type="number" class="form-control boys-count" placeholder="ছাত্র" min="0"></td>
+                            <td><input type="number" class="form-control girls-count" placeholder="ছাত্রী" min="0"></td>
+                            <td><button class="btn btn-danger remove-stand-btn">মুছুন</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-day-shift add-stand-btn" id="add-day-stand-btn">স্ট্যান্ড যোগ করুন</button>
+            </div>
+
+            <button class="btn btn-primary" id="add-route-btn">
+                <span id="add-route-text">রাস্তা যুক্ত করুন</span>
+            </button>
+
+            <h3 style="margin-top: 30px; margin-bottom: 15px;">সকল রাস্তার তালিকা</h3>
+            <table class="data-table" id="routes-table">
+                <thead>
+                    <tr>
+                        <th>রাস্তা নাম</th>
+                        <th>স্ট্যান্ডসমূহ</th>
+                        <th>ছাত্র সংখ্যা</th>
+                        <th>ছাত্রী সংখ্যা</th>
+                        <th>শাখা</th>
+                        <th>এডিট</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Bus Management Section -->
+        <div class="settings-card" id="bus-management" style="display: none;">
+            <h2 class="card-title"><i>🚌</i> বাস ব্যবস্থাপনা</h2>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="bus-number">বাস নং</label>
+                    <input type="text" id="bus-number" class="form-control" placeholder="যেমন: ০১">
+                </div>
+                <div class="form-group">
+                    <label for="bus-capacity">ধারণক্ষমতা</label>
+                    <input type="number" id="bus-capacity" class="form-control" placeholder="যেমন: ৪০" min="1">
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="add-bus-btn">
+                <span id="add-bus-text">বাস যোগ করুন</span>
+            </button>
+
+            <h3 style="margin-top: 30px; margin-bottom: 15px;">সকল বাসের তালিকা</h3>
+            <table class="data-table" id="buses-table">
+                <thead>
+                    <tr>
+                        <th>বাস নং</th>
+                        <th>ধারণক্ষমতা</th>
+                        <th>স্ট্যাটাস</th>
+                        <th>এডিট</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Student Management Section -->
+        <div class="settings-card" id="student-management" style="display: none;">
+            <h2 class="card-title"><i>👨‍🎓</i> শিক্ষার্থী ব্যবস্থাপনা</h2>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="student-name">শিক্ষার্থীর নাম</label>
+                    <input type="text" id="student-name" class="form-control" placeholder="পূর্ণ নাম লিখুন">
+                </div>
+                <div class="form-group">
+                    <label for="student-class">বর্তমান শ্রেণি</label>
+                    <input type="text" id="student-class" class="form-control" placeholder="যেমন: ৯ম">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="student-roll">রোল</label>
+                    <input type="number" id="student-roll" class="form-control" placeholder="যেমন: ১" min="1">
+                </div>
+                <div class="form-group">
+                    <label for="student-stand">স্ট্যান্ড</label>
+                    <select id="student-stand" class="form-control" name="student-stand">
+                        <option value="">-- স্ট্যান্ড নির্বাচন করুন --</option>
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="student-shift">শাখা</label>
+                    <select id="student-shift" class="form-control">
+                        <option value="morning">প্রভাতি</option>
+                        <option value="day">দিবা</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="student-contact">যোগাযোগ নম্বর</label>
+                    <input type="tel" id="student-contact" class="form-control" placeholder="যেমন: ০১XXXXXXXXX">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="student-address">বাসার অবস্থান</label>
+                <input type="text" id="student-address" class="form-control" placeholder="বাসার পূর্ণ ঠিকানা">
+            </div>
+
+            <div class="form-group">
+                <label for="student-image">ছবি আপলোড করুন</label>
+                <input type="file" id="student-image" class="form-control" accept="image/*">
+                <img id="student-image-preview" class="student-image-preview" alt="ছাত্রের ছবি">
+            </div>
+
+            <button class="btn btn-primary" id="add-student-btn">
+                <span id="add-student-text">শিক্ষার্থী যোগ করুন</span>
+            </button>
+
+            <div class="search-filter-container" style="margin-top: 30px;">
+                <div class="search-box">
+                    <i>🔍</i>
+                    <input type="text" id="student-search" placeholder="শিক্ষার্থী খুঁজুন...">
+                </div>
+                <div class="shift-toggle">
+                    <span>শাখা:</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="shift-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span id="shift-label">প্রভাতি</span>
+                </div>
+            </div>
+
+            <table class="data-table" id="students-table">
+                <thead>
+                    <tr>
+                        <th>ছবি</th>
+                        <th>নাম</th>
+                        <th>শ্রেণি</th>
+                        <th>রোল</th>
+                        <th>স্ট্যান্ড</th>
+                        <th>শাখা</th>
+                        <th>এডিট</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Audio Management Section -->
+        <div class="settings-card" id="audio-management" style="display: none;">
+            <h2 class="card-title"><i>🕬</i> অডিও ব্যবস্থাপনা</h2>
+
+            <div class="form-group">
+                <label for="stand-list">স্ট্যান্ডের লিস্ট সিলেক্ট করুন</label>
+                <select id="stand-list" class="form-control">
+                    <option value="">-- সিলেক্ট করুন --</option>
+                    <!-- Options will be populated by JavaScript -->
+                </select>
+            </div>
+
+            <div class="drop-zone" id="audio-drop-zone">
+                <p>অডিও ফাইল এখানে ড্রপ করুন অথবা ক্লিক করে সিলেক্ট করুন</p>
+                <button class="btn btn-primary" id="select-audio-btn">ফাইল সিলেক্ট করুন</button>
+                <input type="file" id="audio-upload" accept="audio/*" style="display: none;">
+            </div>
+
+            <div class="audio-preview">
+                <h4>অডিও প্রিভিউ</h4>
+                <audio controls class="audio-player" id="audio-preview">
+                    আপনার ব্রাউজার অডিও এলিমেন্ট সাপোর্ট করে না।
+                </audio>
+                <p id="audio-text-preview" style="margin-top: 10px;"></p>
+            </div>
+
+            <button class="btn btn-primary" id="save-audio-btn">অডিও সেভ করুন</button>
+            <button class="btn" id="more-audios-btn">অন্যান্য অডিওসমূহ</button>
+
+            <!-- Audio Phrase Management Section -->
+            <div class="settings-card" id="audio-phrase-management" style="margin-top: 20px;">
+                <h3>অডিও ফ্রেজ ব্যবস্থাপনা</h3>
+                
+                <div class="form-group">
+                    <label for="phrase-type">ফ্রেজ টাইপ</label>
+                    <select id="phrase-type" class="form-control">
+                        <option value="greeting">গ্রিটিং</option>
+                        <option value="stand">স্ট্যান্ড</option>
+                        <option value="bus-number">বাস নম্বর</option>
+                        <option value="boys">ছাত্র</option>
+                        <option value="girls">ছাত্রী</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phrase-text">ফ্রেজ টেক্সট</label>
+                    <input type="text" id="phrase-text" class="form-control" placeholder="ফ্রেজ টেক্সট লিখুন">
+                </div>
+                
+                <div class="drop-zone" id="phrase-drop-zone">
+                    <p>অডিও ফাইল এখানে ড্রপ করুন</p>
+                    <input type="file" id="phrase-audio-upload" accept="audio/*" style="display: none;">
+                </div>
+                
+                <button class="btn btn-primary" id="save-phrase-btn">ফ্রেজ সেভ করুন</button>
+                
+                <table class="data-table" style="margin-top: 20px;" id="phrases-table">
+                    <thead>
+                        <tr>
+                            <th>টাইপ</th>
+                            <th>টেক্সট</th>
+                            <th>অডিও</th>
+                            <th>একশন</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Phrases will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Audio List Modal -->
+            <div class="modal" id="audio-list-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">সকল অডিও ফাইল</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+
+                    <div class="audio-list">
+                        <!-- Audio items will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Management Section -->
+        <div class="settings-card" id="data-management" style="display: none;">
+            <h2 class="card-title"><i>💾</i> ডাটা ব্যবস্থাপনা</h2>
+            
+            <div class="export-section">
+                <h3>ডাটা এক্সপোর্ট</h3>
+                <p>আপনার বর্তমান ডাটাবেস থেকে ডাটা CSV ফাইল হিসেবে এক্সপোর্ট করুন</p>
+                
+                <div class="export-options">
+                    <button class="btn btn-primary" id="export-routes-btn">রাস্তা এক্সপোর্ট</button>
+                    <button class="btn btn-primary" id="export-buses-btn">বাস এক্সপোর্ট</button>
+                    <button class="btn btn-primary" id="export-students-btn">শিক্ষার্থী এক্সপোর্ট</button>
+                </div>
+            </div>
+            
+            <div class="export-section" style="margin-top: 30px;">
+                <h3>ডাটা ইম্পোর্ট</h3>
+                <p>CSV ফাইল থেকে ডাটা ইম্পোর্ট করুন (এক্সপোর্ট করা ফাইল ফরম্যাটে)</p>
+                
+                <div class="form-group">
+                    <label for="import-file">ফাইল নির্বাচন করুন</label>
+                    <input type="file" id="import-file" class="form-control" accept=".csv">
+                </div>
+                
+                <button class="btn btn-secondary" id="import-data-btn">ডাটা ইম্পোর্ট করুন</button>
+            </div>
+            
+            <div class="export-section" style="margin-top: 30px; border-top: 2px solid var(--danger);">
+                <h3 style="color: var(--danger);">ডাটা মুছুন</h3>
+                <p>সমস্ত ডাটা মুছে ফেলুন (এক্সপোর্ট করার পরেই শুধুমাত্র এই অপশন ব্যবহার করুন)</p>
+                
+                <button class="btn btn-danger" id="erase-data-btn">সমস্ত ডাটা মুছুন</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirmation Dialog -->
+    <div class="confirmation-dialog" id="confirmation-dialog">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h3 class="dialog-title" id="dialog-title">নিশ্চিত করুন</h3>
+            </div>
+            <div class="dialog-body" id="dialog-message">
+                আপনি কি নিশ্চিত যে আপনি এই একশনটি সম্পাদন করতে চান?
+            </div>
+            <div class="dialog-footer">
+                <button class="btn btn-secondary" id="dialog-cancel-btn">বাতিল</button>
+                <button class="btn btn-danger" id="dialog-confirm-btn">নিশ্চিত করুন</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // DOM Elements
+            const statusMessage = document.getElementById('status-message');
+            const navItems = document.querySelectorAll('.nav-item');
+            const settingsCards = document.querySelectorAll('.settings-card');
+            
+            // Route Management Elements
+            const routeNameInput = document.getElementById('route-name');
+            const shiftTabs = document.querySelectorAll('.shift-tab');
+            const morningShiftFields = document.getElementById('morning-shift-fields');
+            const dayShiftFields = document.getElementById('day-shift-fields');
+            const morningStandTable = document.getElementById('morning-stand-table').getElementsByTagName('tbody')[0];
+            const dayStandTable = document.getElementById('day-stand-table').getElementsByTagName('tbody')[0];
+            const addMorningStandBtn = document.getElementById('add-morning-stand-btn');
+            const addDayStandBtn = document.getElementById('add-day-stand-btn');
+            const addRouteBtn = document.getElementById('add-route-btn');
+            const routesTable = document.getElementById('routes-table').getElementsByTagName('tbody')[0];
+            
+            // Bus Management Elements
+            const busNumberInput = document.getElementById('bus-number');
+            const busCapacityInput = document.getElementById('bus-capacity');
+            const addBusBtn = document.getElementById('add-bus-btn');
+            const busesTable = document.getElementById('buses-table').getElementsByTagName('tbody')[0];
+            
+            // Student Management Elements
+            const studentNameInput = document.getElementById('student-name');
+            const studentClassInput = document.getElementById('student-class');
+            const studentRollInput = document.getElementById('student-roll');
+            const studentStandSelect = document.getElementById('student-stand');
+            const studentShiftSelect = document.getElementById('student-shift');
+            const studentContactInput = document.getElementById('student-contact');
+            const studentAddressInput = document.getElementById('student-address');
+            const studentImageInput = document.getElementById('student-image');
+            const studentImagePreview = document.getElementById('student-image-preview');
+            const addStudentBtn = document.getElementById('add-student-btn');
+            const studentSearchInput = document.getElementById('student-search');
+            const shiftToggle = document.getElementById('shift-toggle');
+            const shiftLabel = document.getElementById('shift-label');
+            const studentsTable = document.getElementById('students-table').getElementsByTagName('tbody')[0];
+            
+            // Audio Management Elements
+            const standListSelect = document.getElementById('stand-list');
+            const audioDropZone = document.getElementById('audio-drop-zone');
+            const selectAudioBtn = document.getElementById('select-audio-btn');
+            const audioUploadInput = document.getElementById('audio-upload');
+            const audioPreview = document.getElementById('audio-preview');
+            const audioTextPreview = document.getElementById('audio-text-preview');
+            const saveAudioBtn = document.getElementById('save-audio-btn');
+            const moreAudiosBtn = document.getElementById('more-audios-btn');
+            const audioListModal = document.getElementById('audio-list-modal');
+            const closeModalBtn = document.querySelector('.close-modal');
+            const audioList = document.querySelector('.audio-list');
+            
+            // Audio Phrase Management Elements
+            const phraseTypeSelect = document.getElementById('phrase-type');
+            const phraseTextInput = document.getElementById('phrase-text');
+            const phraseDropZone = document.getElementById('phrase-drop-zone');
+            const phraseAudioUpload = document.getElementById('phrase-audio-upload');
+            const savePhraseBtn = document.getElementById('save-phrase-btn');
+            const phrasesTable = document.getElementById('phrases-table').getElementsByTagName('tbody')[0];
+            
+            // Data Management Elements
+            const exportRoutesBtn = document.getElementById('export-routes-btn');
+            const exportBusesBtn = document.getElementById('export-buses-btn');
+            const exportStudentsBtn = document.getElementById('export-students-btn');
+            const importFileInput = document.getElementById('import-file');
+            const importDataBtn = document.getElementById('import-data-btn');
+            const eraseDataBtn = document.getElementById('erase-data-btn');
+            
+            // Confirmation Dialog Elements
+            const confirmationDialog = document.getElementById('confirmation-dialog');
+            const dialogTitle = document.getElementById('dialog-title');
+            const dialogMessage = document.getElementById('dialog-message');
+            const dialogCancelBtn = document.getElementById('dialog-cancel-btn');
+            const dialogConfirmBtn = document.getElementById('dialog-confirm-btn');
+
+            // State variables
+            let currentAudioFile = null;
+            let currentAudioRouteId = null;
+            let currentStudentImage = null;
+            let currentShift = 'morning';
+            let currentEditingId = null;
+            let currentEditingType = null;
+            let confirmAction = null;
+            let currentPhraseAudioFile = null;
+
+            // Initialize the settings page
+            await initializeSettings();
+
+            // Navigation tab switching
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    settingsCards.forEach(card => card.style.display = 'none');
+                    
+                    this.classList.add('active');
+                    const targetId = this.getAttribute('data-target');
+                    document.getElementById(targetId).style.display = 'block';
+                    
+                    // Special handling for audio management
+                    if (targetId === 'audio-management') {
+                        loadAudioPhrases();
+                    }
+                });
+            });
+
+            // Shift tab switching for route management
+            shiftTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    shiftTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    currentShift = this.getAttribute('data-shift');
+                    
+                    if (currentShift === 'morning') {
+                        morningShiftFields.style.display = 'block';
+                        dayShiftFields.style.display = 'none';
+                    } else {
+                        morningShiftFields.style.display = 'none';
+                        dayShiftFields.style.display = 'block';
+                    }
+                });
+            });
+
+            // Add stand rows
+            addMorningStandBtn.addEventListener('click', () => {
+                addStandRow(morningStandTable, currentShift);
+            });
+
+            addDayStandBtn.addEventListener('click', () => {
+                addStandRow(dayStandTable, currentShift);
+            });
+
+            // Add route button
+            addRouteBtn.addEventListener('click', async () => {
+                const name = routeNameInput.value.trim();
+                
+                if (!name) {
+                    showStatus('দয়া করে রাস্তার নাম প্রদান করুন', 'error');
+                    return;
+                }
+                
+                let stands = [];
+                let totalStudents = 0;
+                let totalBoys = 0;
+                let totalGirls = 0;
+                
+                if (currentShift === 'morning') {
+                    const rows = morningStandTable.querySelectorAll('tr');
+                    if (rows.length === 0) {
+                        showStatus('দয়া করে কমপক্ষে একটি স্ট্যান্ড যোগ করুন', 'error');
+                        return;
+                    }
+                    
+                    rows.forEach(row => {
+                        const standName = row.querySelector('.stand-name').value.trim();
+                        const studentCount = parseInt(row.querySelector('.student-count').value) || 0;
+                        
+                        if (standName) {
+                            stands.push({
+                                name: standName,
+                                students: studentCount
+                            });
+                            totalStudents += studentCount;
+                        }
+                    });
+                } else {
+                    const rows = dayStandTable.querySelectorAll('tr');
+                    if (rows.length === 0) {
+                        showStatus('দয়া করে কমপক্ষে একটি স্ট্যান্ড যোগ করুন', 'error');
+                        return;
+                    }
+                    
+                    rows.forEach(row => {
+                        const standName = row.querySelector('.stand-name').value.trim();
+                        const boysCount = parseInt(row.querySelector('.boys-count').value) || 0;
+                        const girlsCount = parseInt(row.querySelector('.girls-count').value) || 0;
+                        
+                        if (standName) {
+                            stands.push({
+                                name: standName,
+                                boys: boysCount,
+                                girls: girlsCount
+                            });
+                            totalBoys += boysCount;
+                            totalGirls += girlsCount;
+                        }
+                    });
+                }
+                
+                if (stands.length === 0) {
+                    showStatus('দয়া করে কমপক্ষে একটি স্ট্যান্ড যোগ করুন', 'error');
+                    return;
+                }
+                
+                try {
+                    addRouteBtn.disabled = true;
+                    document.getElementById('add-route-text').innerHTML = '<span class="spinner"></span> প্রক্রিয়াধীন...';
+                    
+                    const routeData = {
+                        name,
+                        shift: currentShift,
+                        stands: JSON.stringify(stands),
+                        totalStudents: currentShift === 'morning' ? totalStudents : totalBoys + totalGirls,
+                        totalBoys,
+                        totalGirls
+                    };
+                    
+                    const newRouteId = await window.electronAPI.addRoute(routeData);
+                    
+                    // Add to table
+                    const newRow = routesTable.insertRow();
+                    newRow.setAttribute('data-id', newRouteId);
+                    
+                    const standsText = stands.map(s => s.name).join(', ');
+                    
+                    newRow.innerHTML = `
+                        <td class="editable" data-field="name">${name}</td>
+                        <td>${standsText}</td>
+                        <td>${currentShift === 'morning' ? totalStudents : totalBoys}</td>
+                        <td>${currentShift === 'morning' ? 'N/A' : totalGirls}</td>
+                        <td>${currentShift === 'morning' ? 'প্রভাতি' : 'দিবা'}</td>
+                        <td>
+                            <button class="action-btn edit-btn" data-id="${newRouteId}">✏️</button>
+                            <button class="action-btn" data-id="${newRouteId}">🗑️</button>
+                        </td>
+                    `;
+                    
+                    // Add edit and delete functionality
+                    setupEditButtons(newRow, newRouteId, 'route');
+                    
+                    // Clear form
+                    routeNameInput.value = '';
+                    morningStandTable.innerHTML = '';
+                    dayStandTable.innerHTML = '';
+                    
+                    // Add one empty row
+                    if (currentShift === 'morning') {
+                        addStandRow(morningStandTable, 'morning');
+                    } else {
+                        addStandRow(dayStandTable, 'day');
+                    }
+                    
+                    showStatus('রাস্তা সফলভাবে যোগ করা হয়েছে!', 'success');
+                    
+                    // Refresh student stand select and audio stand select
+                    await populateStudentStandSelect();
+                    await populateStandListSelect();
+                } catch (error) {
+                    console.error('Error adding route:', error);
+                    showStatus('রাস্তা যোগ করতে সমস্যা হয়েছে', 'error');
+                } finally {
+                    addRouteBtn.disabled = false;
+                    document.getElementById('add-route-text').textContent = 'রাস্তা যুক্ত করুন';
+                }
+            });
+
+            // Bus Management Functionality
+            addBusBtn.addEventListener('click', async () => {
+                const number = busNumberInput.value.trim();
+                const capacity = busCapacityInput.value;
+                
+                if (!number || !capacity) {
+                    showStatus('দয়া করে সকল তথ্য প্রদান করুন', 'error');
+                    return;
+                }
+                
+                try {
+                    addBusBtn.disabled = true;
+                    document.getElementById('add-bus-text').innerHTML = '<span class="spinner"></span> প্রক্রিয়াধীন...';
+                    
+                    const newBusId = await window.electronAPI.addBus({
+                        number,
+                        capacity: parseInt(capacity),
+                        isActive: true
+                    });
+                    
+                    // Add to table
+                    const newRow = busesTable.insertRow();
+                    newRow.setAttribute('data-id', newBusId);
+                    newRow.innerHTML = `
+                        <td class="editable" data-field="number">${number}</td>
+                        <td class="editable" data-field="capacity">${capacity} জন</td>
+                        <td>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked data-id="${newBusId}" class="bus-status-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="bus-status-text">কার্যরত</span>
+                        </td>
+                        <td>
+                            <button class="action-btn edit-btn" data-id="${newBusId}">✏️</button>
+                            <button class="action-btn" data-id="${newBusId}">🗑️</button>
+                        </td>
+                    `;
+                    
+                    // Add toggle functionality
+                    const toggle = newRow.querySelector('.bus-status-toggle');
+                    const statusText = newRow.querySelector('.bus-status-text');
+                    
+                    toggle.addEventListener('change', async () => {
+                        try {
+                            const isActive = toggle.checked;
+                            await window.electronAPI.updateBusStatus(newBusId, isActive);
+                            statusText.textContent = isActive ? 'কার্যরত' : 'নষ্ট';
+                            showStatus('বাস স্ট্যাটাস আপডেট করা হয়েছে', 'success');
+                        } catch (error) {
+                            console.error('Error updating bus status:', error);
+                            showStatus('বাস স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে', 'error');
+                            toggle.checked = !toggle.checked; // Revert the toggle
+                        }
+                    });
+                    
+                    // Add edit and delete functionality
+                    setupEditButtons(newRow, newBusId, 'bus');
+                    
+                    // Clear form
+                    busNumberInput.value = '';
+                    busCapacityInput.value = '';
+                    
+                    showStatus('বাস সফলভাবে যোগ করা হয়েছে!', 'success');
+                } catch (error) {
+                    console.error('Error adding bus:', error);
+                    showStatus('বাস যোগ করতে সমস্যা হয়েছে', 'error');
+                } finally {
+                    addBusBtn.disabled = false;
+                    document.getElementById('add-bus-text').textContent = 'বাস যোগ করুন';
+                }
+            });
+
+            // Student Management Functionality
+            // Image preview
+            studentImageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    currentStudentImage = file;
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        studentImagePreview.src = event.target.result;
+                        studentImagePreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Add student button
+            addStudentBtn.addEventListener('click', async () => {
+                const name = studentNameInput.value.trim();
+                const studentClass = studentClassInput.value.trim();
+                const roll = studentRollInput.value;
+                const standValue = studentStandSelect.value;
+                const shift = studentShiftSelect.value;
+                const contact = studentContactInput.value.trim();
+                const address = studentAddressInput.value.trim();
+                
+                if (!name || !studentClass || !roll || !standValue || !contact || !address) {
+                    showStatus('দয়া করে সকল তথ্য প্রদান করুন', 'error');
+                    return;
+                }
+                
+                try {
+                    addStudentBtn.disabled = true;
+                    document.getElementById('add-student-text').innerHTML = '<span class="spinner"></span> প্রক্রিয়াধীন...';
+                    
+                    // Parse stand_id and stand name from the selected value
+                    const [stand_id, stand] = standValue.split('_');
+                    
+                    let imageData = null;
+                    if (currentStudentImage) {
+                        imageData = await fileToArrayBuffer(currentStudentImage);
+                    }
+                    
+                    const newStudentId = await window.electronAPI.addStudent({
+                        name,
+                        class: studentClass,
+                        roll: parseInt(roll),
+                        stand_id: parseInt(stand_id),
+                        stand,
+                        shift,
+                        contact,
+                        address,
+                        image: imageData,
+                        imageName: currentStudentImage ? currentStudentImage.name : null
+                    });
+                    
+                    // Reload students to show the new student with proper image
+                    await loadStudents();
+                    
+                    // Clear form
+                    studentNameInput.value = '';
+                    studentClassInput.value = '';
+                    studentRollInput.value = '';
+                    studentStandSelect.value = '';
+                    studentContactInput.value = '';
+                    studentAddressInput.value = '';
+                    studentImageInput.value = '';
+                    studentImagePreview.style.display = 'none';
+                    currentStudentImage = null;
+                    
+                    showStatus('শিক্ষার্থী সফলভাবে যোগ করা হয়েছে!', 'success');
+                } catch (error) {
+                    console.error('Error adding student:', error);
+                    showStatus('শিক্ষার্থী যোগ করতে সমস্যা হয়েছে', 'error');
+                } finally {
+                    addStudentBtn.disabled = false;
+                    document.getElementById('add-student-text').textContent = 'শিক্ষার্থী যোগ করুন';
+                }
+            });
+
+            // Student search functionality
+            studentSearchInput.addEventListener('input', async () => {
+                const searchTerm = studentSearchInput.value.trim();
+                const currentShift = shiftToggle.checked ? 'day' : 'morning';
+                await loadStudents(searchTerm, currentShift);
+            });
+
+            // Shift toggle functionality
+            shiftToggle.addEventListener('change', async () => {
+                const shift = shiftToggle.checked ? 'day' : 'morning';
+                shiftLabel.textContent = shiftToggle.checked ? 'দিবা' : 'প্রভাতি';
+                const searchTerm = studentSearchInput.value.trim();
+                await loadStudents(searchTerm, shift);
+            });
+
+            // Audio Management Functionality
+            // Drag and drop for audio files
+            audioDropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                audioDropZone.classList.add('active');
+            });
+
+            audioDropZone.addEventListener('dragleave', () => {
+                audioDropZone.classList.remove('active');
+            });
+
+            audioDropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                audioDropZone.classList.remove('active');
+                
+                if (e.dataTransfer.files.length) {
+                    const file = e.dataTransfer.files[0];
+                    if (file.type.startsWith('audio/')) {
+                        handleAudioFile(file);
+                    } else {
+                        showStatus('শুধুমাত্র অডিও ফাইল আপলোড করুন', 'error');
+                    }
+                }
+            });
+
+            // Select audio button
+            selectAudioBtn.addEventListener('click', () => {
+                audioUploadInput.click();
+            });
+
+            audioUploadInput.addEventListener('change', (e) => {
+                if (e.target.files.length) {
+                    const file = e.target.files[0];
+                    if (file.type.startsWith('audio/')) {
+                        handleAudioFile(file);
+                    } else {
+                        showStatus('শুধুমাত্র অডিও ফাইল আপলোড করুন', 'error');
+                    }
+                }
+            });
+
+            // Stand list select change
+            standListSelect.addEventListener('change', async (e) => {
+                currentAudioRouteId = e.target.value;
+                if (currentAudioRouteId) {
+                    try {
+                        const audio = await window.electronAPI.getAudioForRoute(currentAudioRouteId);
+                        if (audio && audio.filePath) {
+                            audioPreview.src = `file://${audio.filePath}`;
+                            audioTextPreview.textContent = 'অডিও লোড করা হয়েছে';
+                        } else {
+                            audioPreview.src = '';
+                            audioTextPreview.textContent = 'কোনো অডিও পাওয়া যায়নি';
+                        }
+                    } catch (error) {
+                        console.error('Error loading audio:', error);
+                        audioPreview.src = '';
+                        audioTextPreview.textContent = 'অডিও লোড করতে সমস্যা হয়েছে';
+                    }
+                } else {
+                    audioPreview.src = '';
+                    audioTextPreview.textContent = '';
+                }
+            });
+
+            // Save audio button
+            saveAudioBtn.addEventListener('click', async () => {
+                if (!currentAudioRouteId) {
+                    showStatus('দয়া করে একটি স্ট্যান্ড লিস্ট নির্বাচন করুন', 'error');
+                    return;
+                }
+                
+                if (!currentAudioFile) {
+                    showStatus('দয়া করে একটি অডিও ফাইল নির্বাচন করুন', 'error');
+                    return;
+                }
+                
+                try {
+                    saveAudioBtn.disabled = true;
+                    saveAudioBtn.innerHTML = '<span class="spinner"></span> প্রক্রিয়াধীন...';
+                    
+                    const arrayBuffer = await fileToArrayBuffer(currentAudioFile);
+                    
+                    await window.electronAPI.saveAudioForRoute({
+                        routeId: currentAudioRouteId,
+                        audioData: arrayBuffer,
+                        fileName: currentAudioFile.name
+                    });
+                    
+                    showStatus('অডিও সফলভাবে সেভ করা হয়েছে!', 'success');
+                    audioUploadInput.value = '';
+                    currentAudioFile = null;
+                    
+                    // Reload the audio preview
+                    const audio = await window.electronAPI.getAudioForRoute(currentAudioRouteId);
+                    if (audio && audio.filePath) {
+                        audioPreview.src = `file://${audio.filePath}`;
+                        audioTextPreview.textContent = 'অডিও লোড করা হয়েছে';
+                    }
+                } catch (error) {
+                    console.error('Error saving audio:', error);
+                    showStatus('অডিও সেভ করতে সমস্যা হয়েছে', 'error');
+                } finally {
+                    saveAudioBtn.disabled = false;
+                    saveAudioBtn.textContent = 'অডিও সেভ করুন';
+                }
+            });
+
+            // More audios button
+            moreAudiosBtn.addEventListener('click', async () => {
+                try {
+                    const audioFiles = await window.electronAPI.getAllAudioFiles();
+                    const audioList = document.querySelector('.audio-list');
+                    audioList.innerHTML = '';
+
+                    if (audioFiles.length === 0) {
+                        audioList.innerHTML = '<p class="no-data">কোনো অডিও ফাইল পাওয়া যায়নি</p>';
+                        return;
+                    }
+
+                    audioFiles.forEach(file => {
+                        const audioItem = document.createElement('div');
+                        audioItem.className = 'audio-item';
+                        audioItem.innerHTML = `
+                            <div class="audio-info">
+                                <h4>${file.name}</h4>
+                                <p>সাইজ: ${formatFileSize(file.size)}</p>
+                                <p>তারিখ: ${new Date(file.date).toLocaleString()}</p>
+                            </div>
+                            <div class="audio-controls">
+                                <audio controls src="${file.path}"></audio>
+                            </div>
+                        `;
+                        audioList.appendChild(audioItem);
+                    });
+
+                    document.getElementById('audio-list-modal').style.display = 'block';
+                } catch (error) {
+                    console.error('Error loading audio files:', error);
+                    showStatus('অডিও লোড করতে সমস্যা হয়েছে', 'error');
+                }
+            });
+
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                const modal = document.getElementById('audio-list-modal');
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // Format file size
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            // Audio Phrase Management Functionality
+            // Drag and drop for phrase audio files
+            phraseDropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                phraseDropZone.classList.add('active');
+            });
+
+            phraseDropZone.addEventListener('dragleave', () => {
+                phraseDropZone.classList.remove('active');
+            });
+
+            phraseDropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                phraseDropZone.classList.remove('active');
+                
+                if (e.dataTransfer.files.length) {
+                    const file = e.dataTransfer.files[0];
+                    if (file.type.startsWith('audio/')) {
+                        currentPhraseAudioFile = file;
+                        showStatus('অডিও ফাইল সিলেক্ট করা হয়েছে', 'success');
+                    } else {
+                        showStatus('শুধুমাত্র অডিও ফাইল আপলোড করুন', 'error');
+                    }
+                }
+            });
+
+            // Select phrase audio button
+            phraseDropZone.addEventListener('click', () => {
+                phraseAudioUpload.click();
+            });
+
+            phraseAudioUpload.addEventListener('change', (e) => {
+                if (e.target.files.length) {
+                    const file = e.target.files[0];
+                    if (file.type.startsWith('audio/')) {
+                        currentPhraseAudioFile = file;
+                        showStatus('অডিও ফাইল সিলেক্ট করা হয়েছে', 'success');
+                    } else {
+                        showStatus('শুধুমাত্র অডিও ফাইল আপলোড করুন', 'error');
+                    }
+                }
+            });
+
+            // Save phrase button
+            savePhraseBtn.addEventListener('click', async () => {
+                const type = phraseTypeSelect.value;
+                const text = phraseTextInput.value.trim();
+                
+                if (!text) {
+                    showStatus('দয়া করে ফ্রেজ টেক্সট প্রদান করুন', 'error');
+                    return;
+                }
+                
+                if (!currentPhraseAudioFile) {
+                    showStatus('দয়া করে একটি অডিও ফাইল নির্বাচন করুন', 'error');
+                    return;
+                }
+                
+                try {
+                    savePhraseBtn.disabled = true;
+                    savePhraseBtn.innerHTML = '<span class="spinner"></span> প্রক্রিয়াধীন...';
+                    
+                    const arrayBuffer = await fileToArrayBuffer(currentPhraseAudioFile);
+                    
+                    await window.electronAPI.saveAudioPhrase({
+                        type,
+                        text,
+                        audioData: arrayBuffer,
+                        fileName: currentPhraseAudioFile.name
+                    });
+                    
+                    showStatus('অডিও ফ্রেজ সফলভাবে সেভ করা হয়েছে!', 'success');
+                    phraseTextInput.value = '';
+                    phraseAudioUpload.value = '';
+                    currentPhraseAudioFile = null;
+                    
+                    // Refresh phrases table
+                    await loadAudioPhrases();
+                } catch (error) {
+                    console.error('Error saving audio phrase:', error);
+                    showStatus('অডিও ফ্রেজ সেভ করতে সমস্যা হয়েছে', 'error');
+                } finally {
+                    savePhraseBtn.disabled = false;
+                    savePhraseBtn.textContent = 'ফ্রেজ সেভ করুন';
+                }
+            });
+
+            // Data Management Functionality
+            // Export buttons
+            exportRoutesBtn.addEventListener('click', async () => {
+                try {
+                    await window.electronAPI.exportData('routes');
+                    showStatus('রাস্তার ডাটা সফলভাবে এক্সপোর্ট করা হয়েছে!', 'success');
+                } catch (error) {
+                    console.error('Error exporting routes:', error);
+                    showStatus('রাস্তার ডাটা এক্সপোর্ট করতে সমস্যা হয়েছে', 'error');
+                }
+            });
+
+            exportBusesBtn.addEventListener('click', async () => {
+                try {
+                    await window.electronAPI.exportData('buses');
+                    showStatus('বাসের ডাটা সফলভাবে এক্সপোর্ট করা হয়েছে!', 'success');
+                } catch (error) {
+                    console.error('Error exporting buses:', error);
+                    showStatus('বাসের ডাটা এক্সপোর্ট করতে সমস্যা হয়েছে', 'error');
+                }
+            });
+
+            exportStudentsBtn.addEventListener('click', async () => {
+                try {
+                    await window.electronAPI.exportData('students');
+                    showStatus('শিক্ষার্থীর ডাটা সফলভাবে এক্সপোর্ট করা হয়েছে!', 'success');
+                } catch (error) {
+                    console.error('Error exporting students:', error);
+                    showStatus('শিক্ষার্থীর ডাটা এক্সপোর্ট করতে সমস্যা হয়েছে', 'error');
+                }
+            });
+
+            // Import data
+            importDataBtn.addEventListener('click', async () => {
+                const file = importFileInput.files[0];
+                if (!file) {
+                    showStatus('দয়া করে একটি ফাইল নির্বাচন করুন', 'error');
+                    return;
+                }
+
+                try {
+                    importDataBtn.disabled = true;
+                    importDataBtn.innerHTML = '<span class="spinner"></span> প্রক্রিয়াধীন...';
+                    
+                    const fileContent = await readFileAsText(file);
+                    await window.electronAPI.importData(fileContent);
+                    
+                    showStatus('ডাটা সফলভাবে ইম্পোর্ট করা হয়েছে!', 'success');
+                    importFileInput.value = '';
+                    
+                    // Refresh all data
+                    await initializeSettings();
+                } catch (error) {
+                    console.error('Error importing data:', error);
+                    showStatus('ডাটা ইম্পোর্ট করতে সমস্যা হয়েছে', 'error');
+                } finally {
+                    importDataBtn.disabled = false;
+                    importDataBtn.textContent = 'ডাটা ইম্পোর্ট করুন';
+                }
+            });
+
+            // Erase data
+            eraseDataBtn.addEventListener('click', async () => {
+                await showConfirmation(
+                    'সমস্ত ডাটা মুছুন',
+                    'আপনি কি নিশ্চিত যে আপনি সমস্ত ডাটা মুছে ফেলতে চান? এটি অপরিবর্তনীয়।',
+                    async () => {
+                        try {
+                            eraseDataBtn.disabled = true;
+                            eraseDataBtn.innerHTML = '<span class="spinner"></span> প্রক্রিয়াধীন...';
+                            
+                            await window.electronAPI.eraseAllData();
+                            showStatus('সমস্ত ডাটা সফলভাবে মুছে ফেলা হয়েছে!', 'success');
+                            
+                            // Refresh all tables
+                            routesTable.innerHTML = '';
+                            busesTable.innerHTML = '';
+                            studentsTable.innerHTML = '';
+                            phrasesTable.innerHTML = '';
+                            await populateStudentStandSelect();
+                            await populateStandListSelect();
+                        } catch (error) {
+                            console.error('Error erasing data:', error);
+                            showStatus('ডাটা মুছতে সমস্যা হয়েছে', 'error');
+                        } finally {
+                            eraseDataBtn.disabled = false;
+                            eraseDataBtn.textContent = 'সমস্ত ডাটা মুছুন';
+                        }
+                    }
+                );
+            });
+
+            // Confirmation Dialog
+            dialogCancelBtn.addEventListener('click', () => {
+                confirmationDialog.style.display = 'none';
+            });
+
+            dialogConfirmBtn.addEventListener('click', async () => {
+                confirmationDialog.style.display = 'none';
+                if (confirmAction) {
+                    await confirmAction();
+                }
+            });
+
+            // Helper Functions
+            function addStandRow(table, shift) {
+                const row = table.insertRow();
+                
+                if (shift === 'morning') {
+                    row.innerHTML = `
+                        <td><input type="text" class="form-control stand-name" placeholder="স্ট্যান্ড নাম"></td>
+                        <td><input type="number" class="form-control student-count" placeholder="সংখ্যা" min="0"></td>
+                        <td><button class="btn btn-danger remove-stand-btn">মুছুন</button></td>
+                    `;
+                } else {
+                    row.innerHTML = `
+                        <td><input type="text" class="form-control stand-name" placeholder="স্ট্যান্ড নাম"></td>
+                        <td><input type="number" class="form-control boys-count" placeholder="ছাত্র" min="0"></td>
+                        <td><input type="number" class="form-control girls-count" placeholder="ছাত্রী" min="0"></td>
+                        <td><button class="btn btn-danger remove-stand-btn">মুছুন</button></td>
+                    `;
+                }
+                
+                row.querySelector('.remove-stand-btn').addEventListener('click', () => {
+                    if (table.querySelectorAll('tr').length > 1) {
+                        row.remove();
+                    } else {
+                        showStatus('কমপক্ষে একটি স্ট্যান্ড থাকতে হবে', 'error');
+                    }
+                });
+            }
+
+            async function showConfirmation(title, message, action) {
+                dialogTitle.textContent = title;
+                dialogMessage.textContent = message;
+                confirmAction = action;
+                confirmationDialog.style.display = 'flex';
+            }
+
+            function showStatus(message, type) {
+                statusMessage.textContent = message;
+                statusMessage.className = 'status-message';
+                statusMessage.classList.add(`status-${type}`);
+                
+                setTimeout(() => {
+                    statusMessage.classList.remove(`status-${type}`);
+                    statusMessage.textContent = '';
+                }, 5000);
+            }
+
+            async function fileToArrayBuffer(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsArrayBuffer(file);
+                });
+            }
+
+            function readFileAsText(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsText(file);
+                });
+            }
+
+            function handleAudioFile(file) {
+                currentAudioFile = file;
+                const audioUrl = URL.createObjectURL(file);
+                audioPreview.src = audioUrl;
+                audioTextPreview.textContent = file.name;
+            }
+
+            function setupEditButtons(row, id, type) {
+                // Edit button
+                row.querySelector('.edit-btn').addEventListener('click', () => {
+                    currentEditingId = id;
+                    currentEditingType = type;
+                    
+                    // Make all editable cells editable
+                    const editableCells = row.querySelectorAll('.editable');
+                    editableCells.forEach(cell => {
+                        const field = cell.getAttribute('data-field');
+                        const originalValue = cell.textContent;
+                        
+                        cell.addEventListener('click', (e) => {
+                            if (e.target !== cell) return;
+                            
+                            const input = document.createElement('input');
+                            input.type = 'text';
+                            input.className = 'editable-input';
+                            input.value = originalValue;
+                            
+                            cell.innerHTML = '';
+                            cell.appendChild(input);
+                            input.focus();
+                            
+                            input.addEventListener('blur', async () => {
+                                const newValue = input.value.trim();
+                                if (newValue && newValue !== originalValue) {
+                                    try {
+                                        await updateRecord(id, type, field, newValue);
+                                        cell.textContent = newValue;
+                                        
+                                        // Special handling for certain fields
+                                        if (type === 'route' && field === 'name') {
+                                            // Refresh stand selects if route name changed
+                                            await populateStudentStandSelect();
+                                            await populateStandListSelect();
+                                        }
+                                        
+                                        showStatus('ডাটা আপডেট করা হয়েছে', 'success');
+                                    } catch (error) {
+                                        console.error('Error updating record:', error);
+                                        cell.textContent = originalValue;
+                                        showStatus('ডাটা আপডেট করতে সমস্যা হয়েছে', 'error');
+                                    }
+                                } else {
+                                    cell.textContent = originalValue;
+                                }
+                            });
+                            
+                            input.addEventListener('keydown', (e) => {
+                                if (e.key === 'Enter') {
+                                    input.blur();
+                                } else if (e.key === 'Escape') {
+                                    cell.textContent = originalValue;
+                                }
+                            });
+                        });
+                    });
+                });
+                
+                // Delete button
+                row.querySelector('.action-btn:not(.edit-btn)').addEventListener('click', async () => {
+                    await showConfirmation(
+                        'ডাটা মুছুন',
+                        'আপনি কি এই ডাটা মুছে ফেলতে চান?',
+                        async () => {
+                            try {
+                                let success = false;
+                                if (type === 'route') {
+                                    await window.electronAPI.deleteRoute(id);
+                                    success = true;
+                                    // Refresh stand selects
+                                    await populateStudentStandSelect();
+                                    await populateStandListSelect();
+                                } else if (type === 'bus') {
+                                    await window.electronAPI.deleteBus(id);
+                                    success = true;
+                                } else if (type === 'student') {
+                                    await window.electronAPI.deleteStudent(id);
+                                    success = true;
+                                }
+                                
+                                if (success) {
+                                    row.remove();
+                                    showStatus('ডাটা সফলভাবে মুছে ফেলা হয়েছে', 'success');
+                                }
+                            } catch (error) {
+                                console.error('Error deleting record:', error);
+                                showStatus('ডাটা মুছতে সমস্যা হয়েছে', 'error');
+                            }
+                        }
+                    );
+                });
+            }
+
+            async function updateRecord(id, type, field, value) {
+                if (type === 'route') {
+                    await window.electronAPI.updateRoute(id, field, value);
+                } else if (type === 'bus') {
+                    await window.electronAPI.updateBus(id, field, value);
+                } else if (type === 'student') {
+                    await window.electronAPI.updateStudent(id, field, value);
+                }
+            }
+
+            // Initialization
+            async function initializeSettings() {
+                try {
+                    // Load routes for tables and selects
+                    const routes = await window.electronAPI.getRoutes();
+                    populateRoutesTable(routes);
+                    await populateStudentStandSelect();
+                    await populateStandListSelect();
+                    
+                    // Load buses for table
+                    const buses = await window.electronAPI.getBuses();
+                    populateBusesTable(buses);
+                    
+                    // Load students for table
+                    await loadStudents();
+                    
+                    // Add initial stand row
+                    addStandRow(morningStandTable, 'morning');
+                } catch (error) {
+                    console.error('Error initializing settings:', error);
+                    showStatus('সেটিংস লোড করতে সমস্যা হয়েছে', 'error');
+                }
+            }
+
+            function populateRoutesTable(routes) {
+                routesTable.innerHTML = '';
+                
+                routes.forEach(route => {
+                    const row = routesTable.insertRow();
+                    row.setAttribute('data-id', route.id);
+                    
+                    const stands = JSON.parse(route.stands);
+                    const standsText = stands.map(s => s.name).join(', ');
+                    
+                    let boysCount = 0;
+                    let girlsCount = 0;
+                    
+                    if (route.shift === 'morning') {
+                        boysCount = stands.reduce((sum, s) => sum + (s.students || 0), 0);
+                        girlsCount = 0;
+                    } else {
+                        boysCount = stands.reduce((sum, s) => sum + (s.boys || 0), 0);
+                        girlsCount = stands.reduce((sum, s) => sum + (s.girls || 0), 0);
+                    }
+                    
+                    row.innerHTML = `
+                        <td class="editable" data-field="name">${route.name}</td>
+                        <td>${standsText}</td>
+                        <td>${boysCount}</td>
+                        <td>${girlsCount}</td>
+                        <td>${route.shift === 'morning' ? 'প্রভাতি' : 'দিবা'}</td>
+                        <td>
+                            <button class="action-btn edit-btn" data-id="${route.id}">✏️</button>
+                            <button class="action-btn" data-id="${route.id}">🗑️</button>
+                        </td>
+                    `;
+                    
+                    // Add edit and delete functionality
+                    setupEditButtons(row, route.id, 'route');
+                });
+            }
+
+            function populateBusesTable(buses) {
+                busesTable.innerHTML = '';
+                
+                buses.forEach(bus => {
+                    const row = busesTable.insertRow();
+                    row.setAttribute('data-id', bus.id);
+                    row.innerHTML = `
+                        <td class="editable" data-field="number">${bus.number}</td>
+                        <td class="editable" data-field="capacity">${bus.capacity} জন</td>
+                        <td>
+                            <label class="toggle-switch">
+                                <input type="checkbox" ${bus.is_active ? 'checked' : ''} data-id="${bus.id}" class="bus-status-toggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span class="bus-status-text">${bus.is_active ? 'কার্যরত' : 'নষ্ট'}</span>
+                        </td>
+                        <td>
+                            <button class="action-btn edit-btn" data-id="${bus.id}">✏️</button>
+                            <button class="action-btn" data-id="${bus.id}">🗑️</button>
+                        </td>
+                    `;
+                    
+                    // Add toggle functionality
+                    const toggle = row.querySelector('.bus-status-toggle');
+                    const statusText = row.querySelector('.bus-status-text');
+                    
+                    toggle.addEventListener('change', async () => {
+                        try {
+                            const isActive = toggle.checked;
+                            await window.electronAPI.updateBusStatus(bus.id, isActive);
+                            statusText.textContent = isActive ? 'কার্যরত' : 'নষ্ট';
+                            showStatus('বাস স্ট্যাটাস আপডেট করা হয়েছে', 'success');
+                        } catch (error) {
+                            console.error('Error updating bus status:', error);
+                            showStatus('বাস স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে', 'error');
+                            toggle.checked = !toggle.checked; // Revert the toggle
+                        }
+                    });
+                    
+                    // Add edit and delete functionality
+                    setupEditButtons(row, bus.id, 'bus');
+                });
+            }
+
+            async function populateStudentStandSelect() {
+                try {
+                    const routes = await window.electronAPI.getRoutes();
+                    studentStandSelect.innerHTML = '<option value="">-- স্ট্যান্ড নির্বাচন করুন --</option>';
+                    
+                    routes.forEach(route => {
+                        const stands = Array.isArray(route.stands) ? route.stands : JSON.parse(route.stands);
+                        stands.forEach(stand => {
+                            const option = document.createElement('option');
+                            option.value = `${route.id}_${stand.name}`; // Include route.id as stand_id
+                            option.textContent = `${stand.name} (${route.name} - ${route.shift === 'morning' ? 'প্রভাতি' : 'দিবা'})`;
+                            studentStandSelect.appendChild(option);
+                        });
+                    });
+                } catch (error) {
+                    console.error('Error loading stands:', error);
+                    showStatus('স্ট্যান্ড লোড করতে সমস্যা হয়েছে', 'error');
+                }
+            }
+
+            async function populateStandListSelect() {
+                try {
+                    const routes = await window.electronAPI.getRoutes();
+                    standListSelect.innerHTML = '<option value="">-- সিলেক্ট করুন --</option>';
+                    
+                    routes.forEach(route => {
+                        const stands = Array.isArray(route.stands) ? route.stands : JSON.parse(route.stands);
+                        const option = document.createElement('option');
+                        option.value = route.id;
+                        option.textContent = `${route.name}: ${stands.map(s => s.name).join(', ')} (${route.shift === 'morning' ? 'প্রভাতি' : 'দিবা'})`;
+                        standListSelect.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error('Error loading stand lists:', error);
+                    showStatus('স্ট্যান্ড লিস্ট লোড করতে সমস্যা হয়েছে', 'error');
+                }
+            }
+
+            async function loadStudents(searchTerm = '', shift = 'morning') {
+                try {
+                    const students = await window.electronAPI.getStudents(searchTerm, shift);
+                    studentsTable.innerHTML = '';
+                    
+                    students.forEach(student => {
+                        const row = studentsTable.insertRow();
+                        row.setAttribute('data-id', student.id);
+                        
+                        // Handle image path
+                        let imageSrc = 'assets/default-avatar.png';
+                        if (student.image_path) {
+                            try {
+                                // Check if the image path is valid
+                                const img = new Image();
+                                img.src = student.image_path;
+                                imageSrc = student.image_path;
+                            } catch (error) {
+                                console.error('Error loading student image:', error);
+                            }
+                        }
+                        
+                        row.innerHTML = `
+                            <td><img src="${imageSrc}" alt="ছাত্রের ছবি" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;" onerror="this.src='assets/default-avatar.png'"></td>
+                            <td class="editable" data-field="name">${student.name}</td>
+                            <td class="editable" data-field="class">${student.class}</td>
+                            <td class="editable" data-field="roll">${student.roll}</td>
+                            <td class="editable" data-field="stand">${student.stand}</td>
+                            <td class="editable" data-field="shift">${student.shift === 'morning' ? 'প্রভাতি' : 'দিবা'}</td>
+                            <td>
+                                <button class="action-btn edit-btn" data-id="${student.id}">✏️</button>
+                                <button class="action-btn" data-id="${student.id}">🗑️</button>
+                            </td>
+                        `;
+                        
+                        setupEditButtons(row, student.id, 'student');
+                    });
+                } catch (error) {
+                    console.error('Error loading students:', error);
+                    showStatus('শিক্ষার্থী লোড করতে সমস্যা হয়েছে', 'error');
+                }
+            }
+
+            async function loadAudioPhrases() {
+                try {
+                    const phrases = await window.electronAPI.getAudioPhrases();
+                    phrasesTable.innerHTML = '';
+                    
+                    if (phrases.length === 0) {
+                        const row = phrasesTable.insertRow();
+                        row.innerHTML = '<td colspan="4" style="text-align: center;">কোনো অডিও ফ্রেজ পাওয়া যায়নি</td>';
+                        return;
+                    }
+                    
+                    phrases.forEach(phrase => {
+                        const row = phrasesTable.insertRow();
+                        row.setAttribute('data-id', phrase.id);
+                        
+                        // Determine type display with appropriate styling
+                        let typeDisplay = phrase.type;
+                        if (phrase.type === 'boys') {
+                            typeDisplay = '<span class="phrase-type-boys">ছাত্র</span>';
+                        } else if (phrase.type === 'girls') {
+                            typeDisplay = '<span class="phrase-type-girls">ছাত্রী</span>';
+                        } else if (phrase.type === 'bus-number') {
+                            typeDisplay = '<span class="phrase-type-bus">বাস নম্বর</span>';
+                        }
+                        
+                        row.innerHTML = `
+                            <td>${typeDisplay}</td>
+                            <td>${phrase.text}</td>
+                            <td>
+                                <audio controls style="width: 200px; height: 40px;" src="${phrase.filePath}"></audio>
+                            </td>
+                            <td>
+                                <button class="action-btn edit-btn" data-id="${phrase.id}">✏️</button>
+                                <button class="action-btn" data-id="${phrase.id}">🗑️</button>
+                            </td>
+                        `;
+                        
+                        // Add edit and delete functionality
+                        setupPhraseEditButtons(row, phrase.id);
+                    });
+                } catch (error) {
+                    console.error('Error loading audio phrases:', error);
+                    showStatus('অডিও ফ্রেজ লোড করতে সমস্যা হয়েছে', 'error');
+                }
+            }
+
+            function setupPhraseEditButtons(row, id) {
+                // Edit button
+                row.querySelector('.edit-btn').addEventListener('click', async () => {
+                    try {
+                        const phrase = await window.electronAPI.getAudioPhrase(id);
+                        if (phrase) {
+                            phraseTypeSelect.value = phrase.type;
+                            phraseTextInput.value = phrase.text;
+                            
+                            // Scroll to the phrase form
+                            document.getElementById('audio-phrase-management').scrollIntoView({
+                                behavior: 'smooth'
+                            });
+                            
+                            showStatus('এডিট মোডে ফ্রেজ লোড করা হয়েছে। পরিবর্তন করে সেভ করুন।', 'success');
+                        }
+                    } catch (error) {
+                        console.error('Error loading phrase for edit:', error);
+                        showStatus('ফ্রেজ লোড করতে সমস্যা হয়েছে', 'error');
+                    }
+                });
+                
+                // Delete button
+                row.querySelector('.action-btn:not(.edit-btn)').addEventListener('click', async () => {
+                    await showConfirmation(
+                        'ফ্রেজ মুছুন',
+                        'আপনি কি এই অডিও ফ্রেজ মুছে ফেলতে চান?',
+                        async () => {
+                            try {
+                                await window.electronAPI.deleteAudioPhrase(id);
+                                row.remove();
+                                showStatus('ফ্রেজ সফলভাবে মুছে ফেলা হয়েছে', 'success');
+                            } catch (error) {
+                                console.error('Error deleting phrase:', error);
+                                showStatus('ফ্রেজ মুছতে সমস্যা হয়েছে', 'error');
+                            }
+                        }
+                    );
+                });
+            }
+        });
+    </script>
+</body>
+</html>

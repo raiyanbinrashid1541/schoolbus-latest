@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        @font-face {
+            font-family: 'Noto Serif Bengali';
+            src: url('./assets/fonts/NotoSerifBengali-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Noto Serif Bengali';
+            src: url('./assets/fonts/NotoSerifBengali-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        :root {
+            --dark: #333;
+            --primary: #007bff;
+        }
+
+        /* Splash Screen Animation */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeOut 1.5s forwards 2s;
+        }
+
+        .splash-logo {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite, bounce 2s infinite;
+        }
+
+        .splash-title {
+            font-family: 'Noto Serif Bengali', serif;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--dark);
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .splash-loader {
+            width: 80%;
+            max-width: 300px;
+            height: 10px;
+            background: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .splash-loader-bar {
+            height: 100%;
+            width: 0;
+            background: var(--primary);
+            animation: load 2s forwards;
+        }
+
+        /* Keyframes for animations */
+        @keyframes fadeOut {
+            0% {
+            transform: scale(1);
+            opacity: 1;
+            visibility: visible;
+            }
+            100% {
+            transform: scale(17);
+            opacity: 0;
+            visibility: hidden;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+            transform: scale(1);
+            }
+            50% {
+            transform: scale(1.2);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+            transform: translateY(0);
+            }
+            50% {
+            transform: translateY(-15px);
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+            opacity: 0;
+            }
+            100% {
+            opacity: 1;
+            }
+        }
+
+        @keyframes load {
+            0% {
+            width: 0;
+            }
+            100% {
+            width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div class="splash-screen">
+        <div class="splash-logo">
+            <img src="./assets/bcpsc.png" alt="Logo" style="width: 100%; height: auto;">
+        </div>
+        <h1 class="splash-title">স্কুল বাস ম্যানেজমেন্ট</h1>
+        <div class="splash-loader">
+            <div class="splash-loader-bar"></div>
+        </div>
+    </div> 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide splash screen after animation
+            setTimeout(function() {
+                document.querySelector('.splash-screen').style.display = 'none';
+            }, 3500); // Matches the total animation duration
+        });
+    // Redirect to index.html after animation ends
+    setTimeout(function() {
+        window.location.href = 'index.html';
+    }, 3500); // Matches the total animation duration
+    </script>
+</body>
+</html>

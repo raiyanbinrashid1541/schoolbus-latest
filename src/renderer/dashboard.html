@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Target Marketing BD - Content Management Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar {
+            transition: all 0.3s;
+        }
+        .sidebar.collapsed {
+            width: 80px;
+        }
+        .sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+        .sidebar.collapsed .sidebar-icon {
+            margin-right: 0;
+        }
+        .content-area {
+            transition: all 0.3s;
+        }
+        .content-area.expanded {
+            margin-left: 80px;
+        }
+        .nav-item.active {
+            background-color: #f3f4f6;
+            border-left: 4px solid #3b82f6;
+        }
+        .editor-toolbar {
+            border: 1px solid #e5e7eb;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+        }
+        .editor-content {
+            border: 1px solid #e5e7eb;
+            border-radius: 0 0 4px 4px;
+            min-height: 200px;
+            padding: 1rem;
+        }
+        .language-tab.active {
+            border-bottom: 2px solid #3b82f6;
+            color: #3b82f6;
+        }
+        .image-preview {
+            max-height: 200px;
+            object-fit: contain;
+        }
+        .drag-active {
+            border: 2px dashed #3b82f6;
+            background-color: #f0f7ff;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="sidebar bg-white shadow-lg fixed h-full z-10" id="sidebar">
+            <div class="p-4 flex items-center justify-between border-b">
+                <div class="flex items-center">
+                    <img src="logo.jpg" alt="Logo" class="h-10 w-10 rounded">
+                    <span class="sidebar-text ml-3 font-semibold text-lg">TMB Dashboard</span>
+                </div>
+                <button id="toggleSidebar" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav class="mt-6">
+                <div class="px-4">
+                    <p class="sidebar-text text-xs uppercase text-gray-500 font-semibold mb-4">Main</p>
+                    <a href="#" class="nav-item flex items-center py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg mb-1 active" data-section="dashboard">
+                        <i class="sidebar-icon fas fa-tachometer-alt mr-3 text-blue-500"></i>
+                        <span class="sidebar-text">Dashboard</span>
+                    </a>
+                </div>
+                <div class="px-4 mt-6">
+                    <p class="sidebar-text text-xs uppercase text-gray-500 font-semibold mb-4">Content</p>
+                    <a href="#" class="nav-item flex items-center py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg mb-1" data-section="homepage">
+                        <i class="sidebar-icon fas fa-home mr-3 text-green-500"></i>
+                        <span class="sidebar-text">Homepage</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg mb-1" data-section="services">
+                        <i class="sidebar-icon fas fa-concierge-bell mr-3 text-purple-500"></i>
+                        <span class="sidebar-text">Services</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg mb-1" data-section="blog">
+                        <i class="sidebar-icon fas fa-blog mr-3 text-yellow-500"></i>
+                        <span class="sidebar-text">Blog</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg mb-1" data-section="about">
+                        <i class="sidebar-icon fas fa-info-circle mr-3 text-blue-400"></i>
+                        <span class="sidebar-text">About Us</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg mb-1" data-section="contact">
+                        <i class="sidebar-icon fas fa-envelope mr-3 text-red-400"></i>
+                        <span class="sidebar-text">Contact</span>
+                    </a>
+                </div>
+                <div class="px-4 mt-6">
+                    <p class="sidebar-text text-xs uppercase text-gray-500 font-semibold mb-4">Media</p>
+                    <a href="#" class="nav-item flex items-center py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg mb-1" data-section="images">
+                        <i class="sidebar-icon fas fa-images mr-3 text-indigo-500"></i>
+                        <span class="sidebar-text">Images</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg mb-1" data-section="testimonials">
+                        <i class="sidebar-icon fas fa-quote-right mr-3 text-pink-500"></i>
+                        <span class="sidebar-text">Testimonials</span>
+                    </a>
+                </div>
+                <div class="px-4 mt-6">
+                    <p class="sidebar-text text-xs uppercase text-gray-500 font-semibold mb-4">Settings</p>
+                    <a href="#" class="nav-item flex items-center py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg mb-1" data-section="languages">
+                        <i class="sidebar-icon fas fa-language mr-3 text-teal-500"></i>
+                        <span class="sidebar-text">Languages</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg mb-1" data-section="users">
+                        <i class="sidebar-icon fas fa-users mr-3 text-gray-500"></i>
+                        <span class="sidebar-text">Users</span>
+                    </a>
+                    <a href="#" class="nav-item flex items-center py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg mb-1" data-section="settings">
+                        <i class="sidebar-icon fas fa-cog mr-3 text-gray-700"></i>
+                        <span class="sidebar-text">Settings</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="content-area flex-1 overflow-auto" id="contentArea">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="flex justify-between items-center py-4 px-6">
+                    <h1 class="text-2xl font-semibold text-gray-800" id="pageTitle">Dashboard</h1>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <button class="p-2 text-gray-500 hover:text-gray-700 focus:outline-none" id="notificationsBtn">
+                                <i class="fas fa-bell"></i>
+                                <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <button class="flex items-center space-x-2 focus:outline-none" id="userMenuBtn">
+                                <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="User" class="h-8 w-8 rounded-full">
+                                <span class="hidden md:inline-block">Admin User</span>
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                            <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20" id="userMenu">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <main class="p-6">
+                <!-- Dashboard Section (default) -->
+                <section id="dashboardSection" class="section-content">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="bg-white p-6 rounded-lg shadow">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500">Total Pages</p>
+                                    <h3 class="text-2xl font-bold mt-1">6</h3>
+                                </div>
+                                <div class="bg-blue-100 p-3 rounded-full">
+                                    <i class="fas fa-file-alt text-blue-500 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <a href="#" class="text-blue-500 hover:text-blue-700 text-sm font-medium">View All</a>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500">Total Translations</p>
+                                    <h3 class="text-2xl font-bold mt-1">42</h3>
+                                </div>
+                                <div class="bg-green-100 p-3 rounded-full">
+                                    <i class="fas fa-language text-green-500 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <a href="#" data-section="languages" class="text-green-500 hover:text-green-700 text-sm font-medium">Manage</a>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500">Media Files</p>
+                                    <h3 class="text-2xl font-bold mt-1">18</h3>
+                                </div>
+                                <div class="bg-purple-100 p-3 rounded-full">
+                                    <i class="fas fa-images text-purple-500 text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <a href="#" data-section="images" class="text-purple-500 hover:text-purple-700 text-sm font-medium">Browse</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow mb-6">
+                        <h2 class="text-xl font-semibold mb-4">Recent Changes</h2>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Section</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-07-15 14:32</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Admin</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Updated</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Homepage</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Changed hero title</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-07-15 10:15</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Editor</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Added</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Testimonials</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">New testimonial</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-07-14 16:48</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Admin</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Updated</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Services</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Updated pricing</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Homepage Content Section -->
+                <section id="homepageSection" class="section-content hidden">
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <h2 class="text-xl font-semibold mb-4">Hero Section</h2>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="heroTitle1">Title Line 1 (EN)</label>
+                            <input type="text" id="heroTitle1" value="Empowering Women Entrepreneurs" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="heroTitle1Bn">Title Line 1 (BN)</label>
+                            <input type="text" id="heroTitle1Bn" value="নারী উদ্যোক্তাদের ক্ষমতায়ন" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="heroTitle2">Title Line 2 (EN)</label>
+                            <input type="text" id="heroTitle2" value="With Halal Digital Marketing" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="heroTitle2Bn">Title Line 2 (BN)</label>
+                            <input type="text" id="heroTitle2Bn" value="হালাল ডিজিটাল মার্কেটিং এর মাধ্যমে" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="heroSubtitle">Subtitle (EN)</label>
+                            <textarea id="heroSubtitle" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-20">Ethical digital marketing solutions designed specifically for female entrepreneurs in Bangladesh</textarea>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="heroSubtitleBn">Subtitle (BN)</label>
+                            <textarea id="heroSubtitleBn" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-20">বাংলাদেশের নারী উদ্যোক্তাদের জন্য বিশেষভাবে ডিজাইন করা নৈতিক ডিজিটাল মার্কেটিং সমাধান</textarea>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Hero Image</label>
+                            <div class="flex items-center space-x-4">
+                                <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80" alt="Current Hero Image" class="h-32 w-auto rounded-lg shadow">
+                                <div>
+                                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                        Change Image
+                                    </button>
+                                    <p class="text-xs text-gray-500 mt-1">Recommended size: 1200x800px</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <h2 class="text-xl font-semibold mb-4">Story Section</h2>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="storyTitle">Section Title (EN)</label>
+                            <input type="text" id="storyTitle" value="Our Story" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="storyTitleBn">Section Title (BN)</label>
+                            <input type="text" id="storyTitleBn" value="আমাদের গল্প" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="storySubtitle">Subtitle (EN)</label>
+                            <input type="text" id="storySubtitle" value="How we're changing the digital landscape for women entrepreneurs" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="storySubtitleBn">Subtitle (BN)</label>
+                            <input type="text" id="storySubtitleBn" value="কিভাবে আমরা নারী উদ্যোক্তাদের জন্য ডিজিটাল ল্যান্ডস্কেপ পরিবর্তন করছি" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        
+                        <h3 class="text-lg font-semibold mb-4 mt-8">Story Points</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <!-- Story Point 1 -->
+                            <div class="border rounded-lg p-4">
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="story1Title">Title (EN)</label>
+                                    <input type="text" id="story1Title" value="The Beginning" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="story1TitleBn">Title (BN)</label>
+                                    <input type="text" id="story1TitleBn" value="শুরুটা" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="story1Desc">Description (EN)</label>
+                                    <textarea id="story1Desc" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">Founded in 2020, Target Marketing BD started with a simple mission: to provide halal digital marketing solutions for women entrepreneurs who wanted to grow their businesses online while maintaining Islamic values.</textarea>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="story1DescBn">Description (BN)</label>
+                                    <textarea id="story1DescBn" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">২০২০ সালে প্রতিষ্ঠিত, টার্গেট মার্কেটিং বিডি একটি সহজ মিশন নিয়ে শুরু হয়েছিল: ইসলামিক মূল্যবোধ বজায় রেখে নারী উদ্যোক্তাদের জন্য হালাল ডিজিটাল মার্কেটিং সমাধান প্রদান করা যারা তাদের ব্যবসা অনলাইনে বাড়াতে চেয়েছিলেন।</textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Story Point 2 -->
+                            <div class="border rounded-lg p-4">
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="story2Title">Title (EN)</label>
+                                    <input type="text" id="story2Title" value="The Challenge" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="story2TitleBn">Title (BN)</label>
+                                    <input type="text" id="story2TitleBn" value="চ্যালেঞ্জ" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="story2Desc">Description (EN)</label>
+                                    <textarea id="story2Desc" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">We noticed many talented women entrepreneurs struggling with digital marketing - either because of limited technical knowledge or concerns about maintaining Islamic principles in their online presence.</textarea>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="story2DescBn">Description (BN)</label>
+                                    <textarea id="story2DescBn" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">আমরা লক্ষ্য করেছি অনেক প্রতিভাবান নারী উদ্যোক্তারা ডিজিটাল মার্কেটিং নিয়ে সংগ্রাম করছেন - হয় সীমিত প্রযুক্তিগত জ্ঞানের কারণে অথবা তাদের অনলাইন উপস্থিতিতে ইসলামিক নীতিমালা বজায় রাখার বিষয়ে উদ্বেগের কারণে।</textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Story Point 3 -->
+                            <div class="border rounded-lg p-4">
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="story3Title">Title (EN)</label>
+                                    <input type="text" id="story3Title" value="Our Solution" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="story3TitleBn">Title (BN)</label>
+                                    <input type="text" id="story3TitleBn" value="আমাদের সমাধান" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="story3Desc">Description (EN)</label>
+                                    <textarea id="story3Desc" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">We assembled a team of female digital marketing experts who understand both the technical aspects and the cultural/religious considerations to create truly halal marketing solutions.</textarea>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="story3DescBn">Description (BN)</label>
+                                    <textarea id="story3DescBn" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">আমরা নারী ডিজিটাল মার্কেটিং বিশেষজ্ঞদের একটি দল গঠন করেছি যারা প্রযুক্তিগত দিক এবং সাংস্কৃতিক/ধর্মীয় বিবেচনা উভয়ই বোঝেন যাতে সত্যিকারের হালাল মার্কেটিং সমাধান তৈরি করা যায়।</textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end">
+                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <h2 class="text-xl font-semibold mb-4">Call to Action Buttons</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="storyBtnText">Story Button Text (EN)</label>
+                                <input type="text" id="storyBtnText" value="Our Story" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="storyBtnTextBn">Story Button Text (BN)</label>
+                                <input type="text" id="storyBtnTextBn" value="আমাদের গল্প" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="servicesBtnText">Services Button Text (EN)</label>
+                                <input type="text" id="servicesBtnText" value="Our Services" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="servicesBtnTextBn">Services Button Text (BN)</label>
+                                <input type="text" id="servicesBtnTextBn" value="আমাদের সেবা" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Services Content Section -->
+                <section id="servicesSection" class="section-content hidden">
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <h2 class="text-xl font-semibold mb-4">Services Section Header</h2>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="servicesTitle">Section Title (EN)</label>
+                            <input type="text" id="servicesTitle" value="Our Services" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="servicesTitleBn">Section Title (BN)</label>
+                            <input type="text" id="servicesTitleBn" value="আমাদের সেবাসমূহ" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="servicesSubtitle">Subtitle (EN)</label>
+                            <input type="text" id="servicesSubtitle" value="Comprehensive digital marketing solutions designed specifically for female entrepreneurs" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="servicesSubtitleBn">Subtitle (BN)</label>
+                            <input type="text" id="servicesSubtitleBn" value="নারী উদ্যোক্তাদের জন্য বিশেষভাবে ডিজাইন করা ব্যাপক ডিজিটাল মার্কেটিং সমাধান" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="flex justify-end">
+                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-semibold">Services List</h2>
+                            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Add New Service
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <!-- Service 1 -->
+                            <div class="border rounded-lg p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h3 class="text-lg font-semibold">Service #1: Graphics Design</h3>
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-500 hover:text-blue-700">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service1Title">Title (EN)</label>
+                                        <input type="text" id="service1Title" value="Graphics Design" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service1TitleBn">Title (BN)</label>
+                                        <input type="text" id="service1TitleBn" value="গ্রাফিক্স ডিজাইন" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service1Desc">Description (EN)</label>
+                                        <textarea id="service1Desc" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">Beautiful, professional designs that align with Islamic values and appeal to your target audience.</textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service1DescBn">Description (BN)</label>
+                                        <textarea id="service1DescBn" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">সুন্দর, পেশাদার ডিজাইন যা ইসলামিক মূল্যবোধের সাথে সামঞ্জস্যপূর্ণ এবং আপনার লক্ষ্য দর্শকদের আকর্ষণ করে।</textarea>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service1Price">Price (EN)</label>
+                                        <input type="text" id="service1Price" value="Starting from ৳2,000" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service1PriceBn">Price (BN)</label>
+                                        <input type="text" id="service1PriceBn" value="৳২,০০০ থেকে শুরু" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">Service Icon</label>
+                                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                        <option value="fa-paint-brush" selected>Paint Brush</option>
+                                        <option value="fa-ad">Ad</option>
+                                        <option value="fa-code">Code</option>
+                                        <option value="fa-bullhorn">Bullhorn</option>
+                                        <option value="fa-chart-line">Chart Line</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">Featured Image</label>
+                                    <div class="flex items-center space-x-4">
+                                        <img src="https://via.placeholder.com/300x200" alt="Service Image" class="h-24 w-auto rounded-lg shadow">
+                                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                            Change Image
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-end">
+                                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Service 2 -->
+                            <div class="border rounded-lg p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h3 class="text-lg font-semibold">Service #2: Facebook Ads</h3>
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-500 hover:text-blue-700">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service2Title">Title (EN)</label>
+                                        <input type="text" id="service2Title" value="Facebook Ads" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service2TitleBn">Title (BN)</label>
+                                        <input type="text" id="service2TitleBn" value="ফেসবুক বিজ্ঞাপন" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service2Desc">Description (EN)</label>
+                                        <textarea id="service2Desc" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">Ethical ad campaigns that reach your ideal customers without compromising your values.</textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service2DescBn">Description (BN)</label>
+                                        <textarea id="service2DescBn" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">নৈতিক বিজ্ঞাপন প্রচারণা যা আপনার মূল্যবোধের সাথে আপস না করেই আপনার আদর্শ গ্রাহকদের কাছে পৌঁছায়।</textarea>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service2Price">Price (EN)</label>
+                                        <input type="text" id="service2Price" value="Starting from ৳5,000" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service2PriceBn">Price (BN)</label>
+                                        <input type="text" id="service2PriceBn" value="৳৫,০০০ থেকে শুরু" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">Service Icon</label>
+                                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                        <option value="fa-paint-brush">Paint Brush</option>
+                                        <option value="fa-ad" selected>Ad</option>
+                                        <option value="fa-code">Code</option>
+                                        <option value="fa-bullhorn">Bullhorn</option>
+                                        <option value="fa-chart-line">Chart Line</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">Featured Image</label>
+                                    <div class="flex items-center space-x-4">
+                                        <img src="https://via.placeholder.com/300x200" alt="Service Image" class="h-24 w-auto rounded-lg shadow">
+                                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                            Change Image
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-end">
+                                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Service 3 -->
+                            <div class="border rounded-lg p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h3 class="text-lg font-semibold">Service #3: Website Development</h3>
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-500 hover:text-blue-700">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service3Title">Title (EN)</label>
+                                        <input type="text" id="service3Title" value="Website Development" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service3TitleBn">Title (BN)</label>
+                                        <input type="text" id="service3TitleBn" value="ওয়েবসাইট ডেভেলপমেন্ট" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service3Desc">Description (EN)</label>
+                                        <textarea id="service3Desc" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">Professional websites that showcase your business while maintaining Islamic principles.</textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service3DescBn">Description (BN)</label>
+                                        <textarea id="service3DescBn" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">পেশাদার ওয়েবসাইট যা ইসলামিক নীতিমালা বজায় রেখে আপনার ব্যবসাকে প্রদর্শন করে।</textarea>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service3Price">Price (EN)</label>
+                                        <input type="text" id="service3Price" value="Starting from ৳15,000" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="service3PriceBn">Price (BN)</label>
+                                        <input type="text" id="service3PriceBn" value="৳১৫,০০০ থেকে শুরু" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">Service Icon</label>
+                                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                        <option value="fa-paint-brush">Paint Brush</option>
+                                        <option value="fa-ad">Ad</option>
+                                        <option value="fa-code" selected>Code</option>
+                                        <option value="fa-bullhorn">Bullhorn</option>
+                                        <option value="fa-chart-line">Chart Line</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">Featured Image</label>
+                                    <div class="flex items-center space-x-4">
+                                        <img src="https://via.placeholder.com/300x200" alt="Service Image" class="h-24 w-auto rounded-lg shadow">
+                                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                            Change Image
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-end">
+                                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-center mt-6">
+                            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Add New Service
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <h2 class="text-xl font-semibold mb-4">Call to Action Button</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="viewAllServicesText">Button Text (EN)</label>
+                                <input type="text" id="viewAllServicesText" value="View All Services" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="viewAllServicesTextBn">Button Text (BN)</label>
+                                <input type="text" id="viewAllServicesTextBn" value="সমস্ত সেবা দেখুন" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Testimonials Section -->
+                <section id="testimonialsSection" class="section-content hidden">
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <h2 class="text-xl font-semibold mb-4">Testimonials Section Header</h2>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonialsTitle">Section Title (EN)</label>
+                            <input type="text" id="testimonialsTitle" value="Success Stories" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonialsTitleBn">Section Title (BN)</label>
+                            <input type="text" id="testimonialsTitleBn" value="সাফল্যের গল্প" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonialsSubtitle">Subtitle (EN)</label>
+                            <input type="text" id="testimonialsSubtitle" value="How we've helped women entrepreneurs grow their businesses" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonialsSubtitleBn">Subtitle (BN)</label>
+                            <input type="text" id="testimonialsSubtitleBn" value="কিভাবে আমরা নারী উদ্যোক্তাদের তাদের ব্যবসা বাড়াতে সাহায্য করেছি" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="flex justify-end">
+                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-semibold">Testimonials List</h2>
+                            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Add New Testimonial
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <!-- Testimonial 1 -->
+                            <div class="border rounded-lg p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h3 class="text-lg font-semibold">Testimonial #1</h3>
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-500 hover:text-blue-700">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">Rating</label>
+                                    <div class="flex">
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial1Text">Testimonial Text (EN)</label>
+                                        <textarea id="testimonial1Text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">"Alhamdulillah, I'm satisfied with the designer from Target Marketing BD and have run ad campaigns with them. Alhamdulillah, Mashallah, Barakallah, I've received very good responses. Thanks to Target Marketing BD."</textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial1TextBn">Testimonial Text (BN)</label>
+                                        <textarea id="testimonial1TextBn" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">"আলহামদুলিল্লাহ, আমি টার্গেট মার্কেটিং বিডি থেকে ডিজাইনার দ্বারা সন্তুষ্ট এবং তাদের সাথে বিজ্ঞাপন প্রচারণা চালিয়েছি। আলহামদুলিল্লাহ, মাশাআল্লাহ, বারাকাল্লাহ, আমি খুব ভাল সাড়া পেয়েছি। টার্গেট মার্কেটিং বিডি কে ধন্যবাদ।"</textarea>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial1Name">Client Name (EN)</label>
+                                        <input type="text" id="testimonial1Name" value="Souda Afrin Mim" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial1NameBn">Client Name (BN)</label>
+                                        <input type="text" id="testimonial1NameBn" value="সৌদা আফরিন মিম" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial1Title">Client Title (EN)</label>
+                                        <input type="text" id="testimonial1Title" value="Fashion Boutique Owner" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial1TitleBn">Client Title (BN)</label>
+                                        <input type="text" id="testimonial1TitleBn" value="ফ্যাশন বুটিক মালিক" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">Client Photo</label>
+                                    <div class="flex items-center space-x-4">
+                                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Client Photo" class="h-24 w-24 rounded-full shadow">
+                                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                            Change Photo
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-end">
+                                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Testimonial 2 -->
+                            <div class="border rounded-lg p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h3 class="text-lg font-semibold">Testimonial #2</h3>
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-500 hover:text-blue-700">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">Rating</label>
+                                    <div class="flex">
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial2Text">Testimonial Text (EN)</label>
+                                        <textarea id="testimonial2Text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">"Thanks to Target Marketing BD for correcting the mistakes on my page and providing appropriate advice. My sales have increased by 300% since working with them."</textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial2TextBn">Testimonial Text (BN)</label>
+                                        <textarea id="testimonial2TextBn" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">"আমার পৃষ্ঠায় ভুলগুলি সংশোধন এবং উপযুক্ত পরামর্শ প্রদানের জন্য টার্গেট মার্কেটিং বিডি কে ধন্যবাদ। তাদের সাথে কাজ করার পর থেকে আমার বিক্রয় 300% বৃদ্ধি পেয়েছে।"</textarea>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial2Name">Client Name (EN)</label>
+                                        <input type="text" id="testimonial2Name" value="Mst Rukaiya Nawrin" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial2NameBn">Client Name (BN)</label>
+                                        <input type="text" id="testimonial2NameBn" value="মোসাম্মৎ রুকাইয়া নওরিন" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial2Title">Client Title (EN)</label>
+                                        <input type="text" id="testimonial2Title" value="Handicraft Business" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial2TitleBn">Client Title (BN)</label>
+                                        <input type="text" id="testimonial2TitleBn" value="হস্তশিল্প ব্যবসা" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">Client Photo</label>
+                                    <div class="flex items-center space-x-4">
+                                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client Photo" class="h-24 w-24 rounded-full shadow">
+                                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                            Change Photo
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-end">
+                                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Testimonial 3 -->
+                            <div class="border rounded-lg p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h3 class="text-lg font-semibold">Testimonial #3</h3>
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-500 hover:text-blue-700">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">Rating</label>
+                                    <div class="flex">
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <i class="fas fa-star-half-alt text-yellow-400"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial3Text">Testimonial Text (EN)</label>
+                                        <textarea id="testimonial3Text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">"The website they created for my business is not only beautiful but also fully functional. Their attention to detail is impressive and they understood exactly what I needed as a Muslim business owner."</textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial3TextBn">Testimonial Text (BN)</label>
+                                        <textarea id="testimonial3TextBn" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32">"তারা আমার ব্যবসার জন্য যে ওয়েবসাইট তৈরি করেছে তা শুধু সুন্দরই নয়, সম্পূর্ণ কার্যকরীও। তাদের বিস্তারিত দিকে মনোযোগ অসাধারণ এবং তারা একজন মুসলিম ব্যবসায়ী হিসেবে আমার কী প্রয়োজন তা ঠিক বুঝতে পেরেছিল।"</textarea>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial3Name">Client Name (EN)</label>
+                                        <input type="text" id="testimonial3Name" value="Nusrat Jahan" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial3NameBn">Client Name (BN)</label>
+                                        <input type="text" id="testimonial3NameBn" value="নুসরাত জাহান" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial3Title">Client Title (EN)</label>
+                                        <input type="text" id="testimonial3Title" value="CEO, Organic Cosmetics" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="testimonial3TitleBn">Client Title (BN)</label>
+                                        <input type="text" id="testimonial3TitleBn" value="সিইও, অর্গানিক কসমেটিক্স" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">Client Photo</label>
+                                    <div class="flex items-center space-x-4">
+                                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Client Photo" class="h-24 w-24 rounded-full shadow">
+                                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                            Change Photo
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-end">
+                                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-center mt-6">
+                            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Add New Testimonial
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Languages Section -->
+                <section id="languagesSection" class="section-content hidden">
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <h2 class="text-xl font-semibold mb-4">Language Settings</h2>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Available Languages</label>
+                            <div class="flex space-x-4">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="langEnglish" class="mr-2" checked>
+                                    <label for="langEnglish">English</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="langBangla" class="mr-2" checked>
+                                    <label for="langBangla">Bangla</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Default Language</label>
+                            <select class="shadow appearance-none border rounded w-full md:w-1/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                <option value="en" selected>English</option>
+                                <option value="bn">Bangla</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Language Switcher Style</label>
+                            <div class="flex space-x-4">
+                                <div class="flex items-center">
+                                    <input type="radio" id="langStyleButtons" name="langStyle" class="mr-2" checked>
+                                    <label for="langStyleButtons">Buttons</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="langStyleDropdown" name="langStyle" class="mr-2">
+                                    <label for="langStyleDropdown">Dropdown</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end">
+                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <h2 class="text-xl font-semibold mb-4">Translation Editor</h2>
+                        
+                        <div class="mb-4">
+                            <div class="flex border-b">
+                                <button class="language-tab active px-4 py-2 font-medium" data-lang="en">English</button>
+                                <button class="language-tab px-4 py-2 font-medium" data-lang="bn">Bangla</button>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Search Translations</label>
+                            <input type="text" placeholder="Search for a translation..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Key</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">English</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bangla</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">hero_title1</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Empowering Women Entrepreneurs</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">নারী উদ্যোক্তাদের ক্ষমতায়ন</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <button class="text-blue-500 hover:text-blue-700 mr-2">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">hero_title2</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">With Halal Digital Marketing</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">হালাল ডিজিটাল মার্কেটিং এর মাধ্যমে</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <button class="text-blue-500 hover:text-blue-700 mr-2">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">hero_subtitle</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Ethical digital marketing solutions designed specifically for female entrepreneurs in Bangladesh</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">বাংলাদেশের নারী উদ্যোক্তাদের জন্য বিশেষভাবে ডিজাইন করা নৈতিক ডিজিটাল মার্কেটিং সমাধান</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <button class="text-blue-500 hover:text-blue-700 mr-2">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="flex justify-between items-center mt-6">
+                            <div class="text-sm text-gray-500">Showing 1 to 3 of 42 translations</div>
+                            <div class="flex space-x-2">
+                                <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded">
+                                    Previous
+                                </button>
+                                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    Next
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Images Section -->
+                <section id="imagesSection" class="section-content hidden">
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-semibold">Media Library</h2>
+                            <div>
+                                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                    Upload New Image
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center" id="dropZone">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                <p class="text-gray-500 mb-2">Drag and drop images here or click to browse</p>
+                                <p class="text-xs text-gray-400">Supports JPG, PNG, GIF up to 5MB</p>
+                                <input type="file" id="fileInput" class="hidden" multiple accept="image/*">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                            <!-- Image 1 -->
+                            <div class="border rounded-lg overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80" alt="Hero Image" class="w-full h-32 object-cover">
+                                <div class="p-3">
+                                    <p class="text-sm font-medium truncate">hero-image.jpg</p>
+                                    <p class="text-xs text-gray-500">634×423 • 120KB</p>
+                                    <div class="flex justify-between mt-2">
+                                        <button class="text-blue-500 hover:text-blue-700 text-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Image 2 -->
+                            <div class="border rounded-lg overflow-hidden">
+                                <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Testimonial" class="w-full h-32 object-cover">
+                                <div class="p-3">
+                                    <p class="text-sm font-medium truncate">client-1.jpg</p>
+                                    <p class="text-xs text-gray-500">300×300 • 80KB</p>
+                                    <div class="flex justify-between mt-2">
+                                        <button class="text-blue-500 hover:text-blue-700 text-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Image 3 -->
+                            <div class="border rounded-lg overflow-hidden">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Testimonial" class="w-full h-32 object-cover">
+                                <div class="p-3">
+                                    <p class="text-sm font-medium truncate">client-2.jpg</p>
+                                    <p class="text-xs text-gray-500">300×300 • 85KB</p>
+                                    <div class="flex justify-between mt-2">
+                                        <button class="text-blue-500 hover:text-blue-700 text-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Image 4 -->
+                            <div class="border rounded-lg overflow-hidden">
+                                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Testimonial" class="w-full h-32 object-cover">
+                                <div class="p-3">
+                                    <p class="text-sm font-medium truncate">client-3.jpg</p>
+                                    <p class="text-xs text-gray-500">300×300 • 78KB</p>
+                                    <div class="flex justify-between mt-2">
+                                        <button class="text-blue-500 hover:text-blue-700 text-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Image 5 -->
+                            <div class="border rounded-lg overflow-hidden">
+                                <img src="logo.jpg" alt="Logo" class="w-full h-32 object-contain bg-gray-100">
+                                <div class="p-3">
+                                    <p class="text-sm font-medium truncate">logo.jpg</p>
+                                    <p class="text-xs text-gray-500">200×200 • 50KB</p>
+                                    <div class="flex justify-between mt-2">
+                                        <button class="text-blue-500 hover:text-blue-700 text-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Image 6 -->
+                            <div class="border rounded-lg overflow-hidden">
+                                <img src="https://via.placeholder.com/300x200" alt="Service" class="w-full h-32 object-cover">
+                                <div class="p-3">
+                                    <p class="text-sm font-medium truncate">service-1.jpg</p>
+                                    <p class="text-xs text-gray-500">300×200 • 90KB</p>
+                                    <div class="flex justify-between mt-2">
+                                        <button class="text-blue-500 hover:text-blue-700 text-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center mt-6">
+                            <div class="text-sm text-gray-500">Showing 6 of 18 images</div>
+                            <div class="flex space-x-2">
+                                <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded">
+                                    Previous
+                                </button>
+                                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    Next
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settingsSection" class="section-content hidden">
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <h2 class="text-xl font-semibold mb-6">General Settings</h2>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="siteTitle">Site Title</label>
+                            <input type="text" id="siteTitle" value="Target Marketing BD" class="shadow appearance-none border rounded w-full md:w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="siteTagline">Tagline</label>
+                            <input type="text" id="siteTagline" value="Halal digital marketing solutions for female entrepreneurs" class="shadow appearance-none border rounded w-full md:w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="siteLogo">Logo</label>
+                            <div class="flex items-center space-x-4">
+                                <img src="logo.jpg" alt="Site Logo" class="h-16 w-auto">
+                                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                    Change Logo
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="siteFavicon">Favicon</label>
+                            <div class="flex items-center space-x-4">
+                                <img src="favicon.ico" alt="Favicon" class="h-10 w-10">
+                                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                    Change Favicon
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end">
+                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <h2 class="text-xl font-semibold mb-6">Contact Information</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="contactEmail">Email Address</label>
+                                <input type="email" id="contactEmail" value="targetmarketingbd@gmail.com" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="contactPhone">Phone Number</label>
+                                <input type="tel" id="contactPhone" value="+880 1860 043330" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="contactAddress">Address</label>
+                            <textarea id="contactAddress" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-20">Dhaka, Bangladesh</textarea>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="contactFacebook">Facebook Page URL</label>
+                            <input type="url" id="contactFacebook" value="https://facebook.com/tmbd.xyz" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        
+                        <div class="flex justify-end">
+                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6 mb-6">
+                        <h2 class="text-xl font-semibold mb-6">Social Media</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="socialFacebook">Facebook</label>
+                                <input type="url" id="socialFacebook" value="https://facebook.com/tmbd.xyz" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="socialInstagram">Instagram</label>
+                                <input type="url" id="socialInstagram" value="https://instagram.com/tmbd.xyz" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="socialLinkedIn">LinkedIn</label>
+                                <input type="url" id="socialLinkedIn" placeholder="https://linkedin.com/company/..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="socialYouTube">YouTube</label>
+                                <input type="url" id="socialYouTube" placeholder="https://youtube.com/..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end">
+                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.getElementById('contentArea').classList.toggle('expanded');
+        });
+
+        // Toggle user menu
+        document.getElementById('userMenuBtn').addEventListener('click', function() {
+            document.getElementById('userMenu').classList.toggle('hidden');
+        });
+
+        // Close user menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('#userMenuBtn') && !event.target.closest('#userMenu')) {
+                document.getElementById('userMenu').classList.add('hidden');
+            }
+        });
+
+        // Navigation between sections
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all nav items
+                document.querySelectorAll('.nav-item').forEach(navItem => {
+                    navItem.classList.remove('active');
+                });
+                
+                // Add active class to clicked nav item
+                this.classList.add('active');
+                
+                // Hide all sections
+                document.querySelectorAll('.section-content').forEach(section => {
+                    section.classList.add('hidden');
+                });
+                
+                // Show the selected section
+                const sectionId = this.getAttribute('data-section') + 'Section';
+                document.getElementById(sectionId).classList.remove('hidden');
+                
+                // Update page title
+                const pageTitle = this.querySelector('.sidebar-text') ? this.querySelector('.sidebar-text').textContent : 'Dashboard';
+                document.getElementById('pageTitle').textContent = pageTitle;
+            });
+        });
+
+        // Language tabs in translation editor
+        document.querySelectorAll('.language-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.language-tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                this.classList.add('active');
+                // Here you would load the translations for the selected language
+            });
+        });
+
+        // Drag and drop for image upload
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            dropZone.classList.add('drag-active');
+        }
+
+        function unhighlight() {
+            dropZone.classList.remove('drag-active');
+        }
+
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        fileInput.addEventListener('change', function() {
+            handleFiles(this.files);
+        });
+
+        function handleFiles(files) {
+            ([...files]).forEach(uploadFile);
+        }
+
+        function uploadFile(file) {
+            // Here you would handle the file upload to your server
+            console.log('Uploading file:', file.name);
+            // Display a preview or progress indicator
+        }
+
+        // Initialize the dashboard with the first section visible
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('dashboardSection').classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>

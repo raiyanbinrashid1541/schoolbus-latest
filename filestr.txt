@@ -1,0 +1,26 @@
+school-bus-management/
+├── src/
+│   ├── main/          # Main process files
+│   │   ├── database/  # Database operations
+│   │   ├── models/    # Data models
+│   │   └── main.js    # Main Electron process
+│   ├── renderer/      # Your existing HTML/CSS/JS files
+│   │   ├── assets/
+│   │   ├── display.html
+│   │   ├── index.html
+│   │   └── settings.html
+│   │   └── splash.html
+│   └── preload.js     # Bridge between main and renderer
+├── .gitignore
+├── package.json
+└── README.md
+
+
+
+
+next prompt:
+Write all full codes for these folders.
+│   ├── main/          # Main process files
+│   │   ├── database/  # Database operations
+│   │   ├── models/    # Data models
+│   │   └── main.js    # Main Electron process
