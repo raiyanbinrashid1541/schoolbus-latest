@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # School Bus Manager
 
 An Electron-based desktop application for managing school bus operations.
@@ -21,3 +22,6 @@ An Electron-based desktop application for managing school bus operations.
    git clone https://github.com/raiyanbinrashid1541/schoolbus-latest.git
    cd schoolbus-latest
    ```
+=======
+# schoolbus-latest
+>>>>>>> 1d0395e4cff4a3c5fccd8e1bd28f17ef0b6d67be
