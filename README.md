@@ -13,21 +13,24 @@ An Electron-based desktop application for managing school bus operations.
 - npm (v6 or higher)
 
 ## Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/raiyanbinrashid1541/schoolbus-latest.git
-   cd schoolbus-latest
-   npm i
-   npm rebuild better-sqlite3 --runtime=electron --target=<electron-version> --dist-url=https://electronjs.org/headers
-   rm -rf node_modules
-   npm install
-   npm install -g electron-rebuild
-   npx electron-rebuild
-   npx electron --version
-   npm cache clean --force
-   ```
+# 1. Clone your project
+git clone https://github.com/raiyanbinrashid1541/schoolbus-latest.git
+cd schoolbus-latest
+
+# 2. Install dependencies
+npm install
+
+# 3. Install electron-rebuild (locally)
+npm install --save-dev electron-rebuild
+
+# 4. Rebuild native modules (especially better-sqlite3) for Electron
+npx electron-rebuild
+
+# 5. Run the app (optional check version)
+npx electron --version
+npx electron .
+
 2. Start the application:
    ```bash
       npm start
       ```
-
