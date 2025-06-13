@@ -1,4 +1,4 @@
-# School Bus Manager
+# School Bus Management
 
 An Electron-based desktop application for managing school bus operations.
 
